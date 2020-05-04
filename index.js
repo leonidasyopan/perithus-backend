@@ -36,7 +36,7 @@ app.use((request, response, next) => {
 app.use(helmet());
 
 app.get('/', (request, response) => {
-  response.json({ message: 'Welcome to the API root directory' });
+  response.json({ message: 'Bem-vindo ao root da API.' });
 });
 
 app.post(
@@ -57,11 +57,13 @@ app.post(
 app.post(
   '/login',
   [
-    check('username', 'Please provide your username.')
-      .isLength({ min: 3 })
+    check('username', 'Formato de usuário inválido. Tente novamente!')
+      .isLength({ min: 5 })
       .trim()
       .escape(),
-    check('password', 'Please use your password.').isLength({ min: 5 }),
+    check('password', 'Formato de senha inválido. Tente novamente!').isLength({
+      min: 5,
+    }),
   ],
   userController.handleLogin,
 );
@@ -71,11 +73,13 @@ app.get('/logout', (request, response) => {
     request.session.destroy();
     response.clearCookie('delicious-cookie-id');
     return response.status(200).json({
-      message: 'Logout Successfully',
+      success: true,
+      message: 'Logout bem-sucedido.',
     });
   } else {
     return response.status(400).json({
-      error: 'There was an erro with your logout',
+      success: false,
+      error: 'Houve um erro com seu logout.',
     });
   }
 });

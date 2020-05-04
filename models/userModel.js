@@ -12,7 +12,6 @@ function createUser(username, password, email, callback) {
   const params = [username, password, email];
 
   pool.query(sql, params, (error, data) => {
-    console.log(data);
     if (
       error &&
       error.detail === `Key (username)=(${username}) already exists.`
@@ -31,7 +30,6 @@ function loginUser(username, password, callback) {
   const sql = `SELECT * from user_access WHERE username = '${username}'`;
 
   pool.query(sql, (error, data) => {
-    console.log(data.rows.length);
     if (data.rows.length === 0) {
       err = 'Usuário não encontrado. Por favor tente novamente';
       callback(err, null);

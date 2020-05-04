@@ -6,15 +6,12 @@ const { validationResult } = require('express-validator');
 function handleRegister(request, response) {
   const errors = validationResult(request);
   if (!errors.isEmpty()) {
-    console.log(errors);
     return response.status(422).json({ errors: errors.array() });
   }
 
   const email = request.body.email;
   const username = request.body.username;
   const password = request.body.password;
-
-  console.log();
 
   bcrypt.hash(password, saltRounds, function (err, hash) {
     try {

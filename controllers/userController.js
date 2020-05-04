@@ -11,11 +11,8 @@ function handleRegister(request, response) {
   }
 
   const email = request.body.email;
-  console.log(email);
   const username = request.body.username;
-  console.log(username);
   const password = request.body.password;
-  console.log(password);
 
   console.log();
 
@@ -23,18 +20,20 @@ function handleRegister(request, response) {
     try {
       productModel.createUser(username, hash, email, function (error, data) {
         if (error) {
-          console.log(error);
+          return response.status(400).json({
+            error: error,
+          });
         } else {
-          console.log(
-            `An account has been successfully created for the username: ${username}`,
-          );
-          return response
-            .status(400)
-            .json({ message: 'Account created successfully' });
+          return response.status(200).json({
+            message: 'Account created successfully',
+            username: `${username}`,
+          });
         }
       });
     } catch (err) {
-      throw new Error('Hashing password has failed');
+      return response.status(400).json({
+        error: 'Not able to hash your password. Please try again!',
+      });
     }
   });
 }

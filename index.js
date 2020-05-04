@@ -16,8 +16,6 @@ const userController = require('./controllers/userController.js');
 
 app.set('port', PORT);
 
-// app.use(express.static(path.join(__dirname, "public")));
-// USE SESSION
 app.use(
   session({
     name: 'delicious-cookie-id',
@@ -28,19 +26,14 @@ app.use(
   }),
 );
 
-// Body parser middleware to use post values
-app.use(express.json()); // support JSON encoded bodies
-app.use(express.urlencoded({ extended: true })); // support URL encoded bodies
-app.use((req, res, next) => {
-  res.locals.user = req.session.username;
-  res.locals.cart = req.session.cart;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use((request, response, next) => {
+  response.locals.user = request.session.username;
+  response.locals.cart = request.session.cart;
   next();
 });
 app.use(helmet());
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "ejs");
-
-// Setup our routes
 
 app.get('/', (request, response) => {
   response.json({ message: 'Welcome to the API root directory' });
@@ -49,12 +42,14 @@ app.get('/', (request, response) => {
 app.post(
   '/register',
   [
-    check('email', 'Please provide a valid email.').isEmail().normalizeEmail(),
-    check('username', 'Please define your username.')
-      .isLength({ min: 3 })
+    check('email', 'E-mail inválido. Tente novamente.')
+      .isEmail()
+      .normalizeEmail(),
+    check('username', 'Defina um usuário, mínimo 5 caracteres.')
+      .isLength({ min: 5 })
       .trim()
       .escape(),
-    check('password', 'Please create your password.').isLength({ min: 5 }),
+    check('password', 'Crie sua senha.').isLength({ min: 5 }),
   ],
   userController.handleRegister,
 );
@@ -71,13 +66,17 @@ app.post(
   userController.handleLogin,
 );
 
-app.get('/logout', (req, res) => {
-  if (req.session.username) {
-    req.session.destroy();
-    res.clearCookie('delicious-cookie-id');
-    res.redirect('/login-user');
+app.get('/logout', (request, response) => {
+  if (request.session.username) {
+    request.session.destroy();
+    response.clearCookie('delicious-cookie-id');
+    return response.status(200).json({
+      message: 'Logout Successfully',
+    });
   } else {
-    res.redirect('/login-user');
+    return response.status(400).json({
+      error: 'There was an erro with your logout',
+    });
   }
 });
 

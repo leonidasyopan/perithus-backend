@@ -1,4 +1,4 @@
-const productModel = require('../models/userModel.js');
+const userModel = require('../models/userModel.js');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { validationResult } = require('express-validator');
@@ -15,7 +15,7 @@ function handleRegister(request, response) {
 
   bcrypt.hash(password, saltRounds, function (err, hash) {
     try {
-      productModel.createUser(username, hash, email, function (error, data) {
+      userModel.createUser(username, hash, email, (error, data) => {
         if (error) {
           return response.status(400).json({
             success: false,
@@ -46,7 +46,7 @@ function handleLogin(request, response) {
   const username = request.body.username;
   const password = request.body.password;
 
-  productModel.loginUser(username, password, function (error, data) {
+  userModel.loginUser(username, password, (error, data) => {
     if (error) {
       return response.status(400).json({
         success: false,

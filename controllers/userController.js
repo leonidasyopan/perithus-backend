@@ -55,6 +55,7 @@ function handleLogin(request, response) {
     } else {
       request.session.username = username;
       request.session.cart = [];
+      console.log(request.session.username);
       return response.status(200).json({
         success: true,
         message: 'Login efetuado.',

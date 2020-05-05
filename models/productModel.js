@@ -55,7 +55,10 @@ function updateProduct(
   const params = [product_name, product_description, product_price, id];
 
   pool.query(sql, params, (error, data) => {
-    if (error) {
+    if (data.rowCount === 0) {
+      error = 'Produto não encontrado no banco de dados. Tente novamente!';
+      callback(error, null);
+    } else if (error) {
       callback(error, null);
     } else {
       callback(null, data.rows);
@@ -66,10 +69,11 @@ function updateProduct(
 function deleteProduct(id, callback) {
   const sql = `DELETE FROM products WHERE product_id = ${id}`;
 
-  // TODO - Handle cases where product ID does not existe.
-
   pool.query(sql, (error, data) => {
-    if (error) {
+    if (data.rowCount === 0) {
+      error = 'Produto não encontrado no banco de dados.';
+      callback(error, null);
+    } else if (error) {
       callback(error, null);
     } else {
       callback(null, data.rows);

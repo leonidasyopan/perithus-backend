@@ -2,7 +2,7 @@ const orderModel = require('../models/orderModel.js');
 const { validationResult } = require('express-validator');
 
 function handleListOrders(request, response) {
-  orderModel.fecthProductList((error, data) => {
+  orderModel.fecthOrderList((error, data) => {
     if (error || data == null) {
       return response.status(400).json({ success: false, message: error });
     } else {
@@ -18,22 +18,31 @@ function handleAddOrder(request, response) {
   }
 
   const product_id = request.body.product_id;
+  console.log(`product_id: ${product_id}`);
   const product_amount = request.body.product_amount;
+  console.log(`product_amount: ${product_amount}`);
+  const username = request.session.username;
+  console.log(`username: ${username}`);
 
-  orderModel.createOrder(product_id, product_amount, (error, data) => {
-    if (error) {
-      return response.status(400).json({
-        success: false,
-        error: error,
-      });
-    } else {
-      return response.status(200).json({
-        success: true,
-        message: 'Pedido enviado com sucesso!',
-        product: `${product_id}`,
-      });
-    }
-  });
+  orderModel.createOrder(
+    product_id,
+    product_amount,
+    username,
+    (error, data) => {
+      if (error) {
+        return response.status(400).json({
+          success: false,
+          error: error,
+        });
+      } else {
+        return response.status(200).json({
+          success: true,
+          message: 'Pedido enviado com sucesso!',
+          product: `${product_id}`,
+        });
+      }
+    },
+  );
 }
 
 // function handleUpdateOrder(request, response) {

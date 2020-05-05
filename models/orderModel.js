@@ -5,7 +5,10 @@ const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
 
 function fecthOrderList(callback) {
-  const sql = `SELECT * FROM products`;
+  const sql = `SELECT * FROM order_details od
+  INNER JOIN order_register ore ON ore.order_id = od.order_id
+  INNER JOIN products p ON p.product_id = od.product_id
+  INNER JOIN user_access ua ON ua.user_id = ore.user_id`;
 
   pool.query(sql, function (error, data) {
     if (error) {
@@ -16,21 +19,43 @@ function fecthOrderList(callback) {
   });
 }
 
-function createOrder(product_id, product_amount, callback) {
-  const sql = `INSERT INTO order_register (
+function createOrder(product_id, product_amount, username, callback) {
+  const sqlOne = `INSERT INTO order_register (
     user_id, 
     order_date
   ) VALUES(
-    $1,     
+    (SELECT user_id FROM user_access WHERE username = '${username}'),     
     current_timestamp
   ) RETURNING order_id`;
-  const params = [product_name, product_description, product_price];
 
-  pool.query(sql, params, (error, data) => {
+  console.log(`sqlOne: ${sqlOne}`);
+
+  pool.query(sqlOne, (error, data1) => {
     if (error) {
       callback(error, null);
     } else {
-      callback(null, data.rows);
+      const sqlTwo = `INSERT INTO order_details (
+        order_id,
+        product_id,
+        product_amount
+      ) VALUES (
+        (SELECT order_id 
+          FROM order_register 
+          ORDER BY order_date DESC 
+          LIMIT 1),
+        ${product_id},
+        ${product_amount}
+      )`;
+
+      console.log(`sqlTwo: ${sqlTwo}`);
+
+      pool.query(sqlTwo, (error, data2) => {
+        if (error) {
+          callback(error, null);
+        } else {
+          callback(null, data2);
+        }
+      });
     }
   });
 }

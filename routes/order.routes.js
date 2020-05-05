@@ -12,11 +12,11 @@ orderRoutes.post(
     check('product_id', 'A id do produto é um número natural')
       .trim()
       .escape()
-      .toFloat(),
+      .toInt(),
     check('product_amount', 'Forneça uma quantidade válida.')
       .trim()
       .escape()
-      .toFloat(),
+      .toInt(),
   ],
   orderController.handleAddOrder,
 );

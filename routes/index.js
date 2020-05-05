@@ -8,8 +8,8 @@ routes.get('/', (request, response) => {
   response.json({ message: 'Bem-vindo ao root da API.' });
 });
 
-routes.use('/user', userRoutes.userRoutes);
-routes.use('/product', productRoutes.productRoutes);
+routes.use('/usuario', userRoutes.userRoutes);
+routes.use('/produto', productRoutes.productRoutes);
 
 module.exports = {
   routes,

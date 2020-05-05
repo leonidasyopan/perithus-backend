@@ -5,7 +5,7 @@ const userController = require('../controllers/userController');
 const userRoutes = Router();
 
 userRoutes.post(
-  '/register',
+  '/cadastro',
   [
     check('email', 'E-mail inválido. Tente novamente.')
       .isEmail()

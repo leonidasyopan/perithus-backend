@@ -18,11 +18,8 @@ function handleAddProduct(request, response) {
   }
 
   const product_name = request.body.product_name;
-  console.log(product_name);
   const product_description = request.body.product_description;
-  console.log(product_description);
   const product_price = request.body.product_price;
-  console.log(product_price);
 
   productModel.createProduct(
     product_name,
@@ -38,14 +35,69 @@ function handleAddProduct(request, response) {
         return response.status(200).json({
           success: true,
           message: 'Produto criado com sucesso!',
-          username: `${product_name}`,
+          product: `${product_name}`,
         });
       }
     },
   );
 }
 
+function handleUpdateProduct(request, response) {
+  const errors = validationResult(request);
+  if (!errors.isEmpty()) {
+    return response.status(422).json({ errors: errors.array() });
+  }
+
+  const { id } = request.params;
+
+  const product_name = request.body.product_name;
+  const product_description = request.body.product_description;
+  const product_price = request.body.product_price;
+
+  productModel.updateProduct(
+    id,
+    product_name,
+    product_description,
+    product_price,
+    (error, data) => {
+      if (error) {
+        return response.status(400).json({
+          success: false,
+          error: error,
+        });
+      } else {
+        return response.status(200).json({
+          success: true,
+          message: 'Produto alterado com sucesso!',
+          product: `${product_name}`,
+        });
+      }
+    },
+  );
+}
+
+function handleDeleteProduct(request, response) {
+  const { id } = request.params;
+
+  productModel.deleteProduct(id, (error, data) => {
+    if (error) {
+      return response.status(400).json({
+        success: false,
+        error: error,
+      });
+    } else {
+      return response.status(200).json({
+        success: true,
+        message: 'Produto deletado com sucesso!',
+        product: id,
+      });
+    }
+  });
+}
+
 module.exports = {
   handleListProducts,
   handleAddProduct,
+  handleDeleteProduct,
+  handleUpdateProduct,
 };

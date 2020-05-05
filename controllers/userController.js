@@ -45,23 +45,30 @@ function handleLogin(request, response) {
 
   const username = request.body.username;
   const password = request.body.password;
-
-  userModel.loginUser(username, password, (error, data) => {
-    if (error) {
-      return response.status(400).json({
-        success: false,
-        message: error,
-      });
-    } else {
-      request.session.username = username;
-      request.session.cart = [];
-      return response.status(200).json({
-        success: true,
-        message: 'Login efetuado.',
-        username: `${username}`,
-      });
-    }
-  });
+  if (request.session.username) {
+    return response.status(200).json({
+      success: false,
+      message: 'Você já está logado.',
+      username: `${username}`,
+    });
+  } else {
+    userModel.loginUser(username, password, (error, data) => {
+      if (error) {
+        return response.status(400).json({
+          success: false,
+          message: error,
+        });
+      } else {
+        request.session.username = username;
+        request.session.cart = [];
+        return response.status(200).json({
+          success: true,
+          message: 'Login efetuado com sucesso.',
+          username: `${username}`,
+        });
+      }
+    });
+  }
 }
 
 module.exports = {

@@ -79,28 +79,28 @@ function handleAddOrder(request, response) {
 //   );
 // }
 
-// function handleDeleteOrder(request, response) {
-//   const { id } = request.params;
+function handleDeleteOrder(request, response) {
+  const { id } = request.params;
 
-//   orderModel.deleteOrder(id, (error, data) => {
-//     if (error) {
-//       return response.status(400).json({
-//         success: false,
-//         error: error,
-//       });
-//     } else {
-//       return response.status(200).json({
-//         success: true,
-//         message: 'Produto deletado com sucesso!',
-//         product: id,
-//       });
-//     }
-//   });
-// }
+  orderModel.deleteOrder(id, (error, data) => {
+    if (error) {
+      return response.status(400).json({
+        success: false,
+        error: error,
+      });
+    } else {
+      return response.status(200).json({
+        success: true,
+        message: 'Produto deletado com sucesso!',
+        product: id,
+      });
+    }
+  });
+}
 
 module.exports = {
   handleListOrders,
   handleAddOrder,
-  // handleDeleteOrder,
+  handleDeleteOrder,
   // handleUpdateOrder,
 };

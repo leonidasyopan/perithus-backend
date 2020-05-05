@@ -97,24 +97,24 @@ function createOrder(product_id, product_amount, username, callback) {
 //   });
 // }
 
-// function deleteOrder(id, callback) {
-//   const sql = `DELETE FROM products WHERE product_id = ${id}`;
+function deleteOrder(id, callback) {
+  const sql = `DELETE FROM products WHERE product_id = ${id}`;
 
-//   pool.query(sql, (error, data) => {
-//     if (data.rowCount === 0) {
-//       error = 'Produto não encontrado no banco de dados.';
-//       callback(error, null);
-//     } else if (error) {
-//       callback(error, null);
-//     } else {
-//       callback(null, data.rows);
-//     }
-//   });
-// }
+  pool.query(sql, (error, data) => {
+    if (data.rowCount === 0) {
+      error = 'Produto não encontrado no banco de dados.';
+      callback(error, null);
+    } else if (error) {
+      callback(error, null);
+    } else {
+      callback(null, data.rows);
+    }
+  });
+}
 
 module.exports = {
   fecthOrderList,
   createOrder,
-  // deleteOrder,
+  deleteOrder,
   // updateOrder,
 };

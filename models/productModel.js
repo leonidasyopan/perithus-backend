@@ -66,6 +66,8 @@ function updateProduct(
 function deleteProduct(id, callback) {
   const sql = `DELETE FROM products WHERE product_id = ${id}`;
 
+  // TODO - Handle cases where product ID does not existe.
+
   pool.query(sql, (error, data) => {
     if (error) {
       callback(error, null);

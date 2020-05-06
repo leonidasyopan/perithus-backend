@@ -13,6 +13,11 @@ taxRoutes.post(
   taxController.handleOrdersTaxByPeriod,
 );
 
+taxRoutes.patch(
+  '/registrar-imposto-pago/:id',
+  taxController.handleOrderPaymentStatus,
+);
+
 module.exports = {
   taxRoutes,
 };

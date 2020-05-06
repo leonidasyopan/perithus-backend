@@ -9,6 +9,7 @@ function fecthOrderList(username, callback) {
   ua.username,
   od.order_id,
   ore.order_payment,
+  ore.payment_date,
   ore.order_date,
   od.product_amount,
   p.product_id,

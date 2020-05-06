@@ -10,6 +10,7 @@ function fecthOrdersByMonth(ini_date, end_date, username, callback) {
   od.product_amount,
   ua.user_id,
   ore.order_payment,
+  ore.payment_date,
   ore.order_date,
   p.product_name,
   p.product_description,
@@ -33,6 +34,22 @@ function fecthOrdersByMonth(ini_date, end_date, username, callback) {
   });
 }
 
+function changeOrderPaymentStatus(id, callback) {
+  const sql = `DELETE FROM products WHERE product_id = ${id}`;
+
+  pool.query(sql, (error, data) => {
+    if (data.rowCount === 0) {
+      error = 'Produto não encontrado no banco de dados.';
+      callback(error, null);
+    } else if (error) {
+      callback(error, null);
+    } else {
+      callback(null, data.rows);
+    }
+  });
+}
+
 module.exports = {
   fecthOrdersByMonth,
+  changeOrderPaymentStatus,
 };

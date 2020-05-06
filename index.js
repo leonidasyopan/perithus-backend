@@ -1,4 +1,5 @@
 const express = require('express');
+var cors = require('cors');
 require('dotenv').config();
 const helmet = require('helmet');
 
@@ -9,6 +10,8 @@ const routes = require('./routes');
 
 const PORT = process.env.PORT || 3333;
 const app = express();
+
+app.use(cors());
 
 app.set('port', PORT);
 

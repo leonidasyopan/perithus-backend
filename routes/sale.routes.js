@@ -4,7 +4,7 @@ const saleController = require('../controllers/saleController');
 
 const saleRoutes = Router();
 
-// saleRoutes.get('/listar-vendas', saleController.handleListSales);
+saleRoutes.get('/listar-vendas', saleController.handleListSales);
 
 saleRoutes.post(
   '/nova-venda',

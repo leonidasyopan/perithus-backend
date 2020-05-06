@@ -1,24 +1,24 @@
 const saleModel = require('../models/saleModel.js');
 const { validationResult } = require('express-validator');
 
-// function handleListSales(request, response) {
-//   const username = request.session.username;
+function handleListSales(request, response) {
+  const username = request.session.username;
 
-//   saleModel.fecthSaleList(username, (error, data) => {
-//     if (error || data == null) {
-//       return response.status(400).json({ success: false, message: error });
-//     } else {
-//       // Map method to calculate the total of the sale
-//       data.map((item) => {
-//         const totalItems =
-//           Number(item.product_price) * Number(item.product_amount);
-//         item.sale_total = totalItems;
-//       });
+  saleModel.fecthSaleList(username, (error, data) => {
+    if (error || data == null) {
+      return response.status(400).json({ success: false, message: error });
+    } else {
+      // Map method to calculate the total of the sale
+      data.map((item) => {
+        const totalItems =
+          Number(item.sale_price_per_product) * Number(item.product_amount);
+        item.sale_total = totalItems;
+      });
 
-//       return response.status(200).json(data);
-//     }
-//   });
-// }
+      return response.status(200).json(data);
+    }
+  });
+}
 
 function handleAddSale(request, response) {
   const errors = validationResult(request);
@@ -109,7 +109,7 @@ function handleAddSale(request, response) {
 // }
 
 module.exports = {
-  // handleListSales,
+  handleListSales,
   handleAddSale,
   // handleDeleteSale,
   // handleUpdateSale,

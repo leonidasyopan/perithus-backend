@@ -35,15 +35,13 @@ function fecthOrdersByMonth(ini_date, end_date, username, callback) {
 }
 
 function changeOrderPaymentStatus(id, username, callback) {
-  const sqlOne = `SELECT order_id 
+  const sqlOne = `SELECT order_id, order_payment
   FROM order_register 
   WHERE order_id = ${id} 
   AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
-  console.log(sqlOne);
 
   pool.query(sqlOne, (error, result) => {
     if (result.rowCount == 0) {
-      console.log(result);
       error = `Você não está autorizado a alterar informações desse pedido.`;
       callback(error, null);
     } else if (error) {
@@ -58,16 +56,11 @@ function changeOrderPaymentStatus(id, username, callback) {
       AND
         user_id = (SELECT user_id FROM user_access WHERE username = '${username}')`;
 
-      console.log(`sqlTwo: ${sqlTwo}`);
-
       pool.query(sqlTwo, (err, data) => {
-        console.log(`data: ${data}`);
-        if (data[0].rowCount === 0 && data[1].rowCount === 0) {
-          err = 'Pedido não encontrado no banco de dados.';
-          callback(err, null);
-        } else if (err) {
+        if (err) {
           callback(err, null);
         } else {
+          console.log(data.rows);
           callback(null, data.rows);
         }
       });

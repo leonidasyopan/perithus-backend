@@ -44,6 +44,9 @@ function changeOrderPaymentStatus(id, username, callback) {
     if (result.rowCount == 0) {
       error = `Você não está autorizado a alterar informações desse pedido.`;
       callback(error, null);
+    } else if (result.rows[0].order_payment == true) {
+      error = `Esse pedido já está registrado como pago.`;
+      callback(error, null);
     } else if (error) {
       callback(error, null);
     } else if (result.rows[0].order_id == id) {

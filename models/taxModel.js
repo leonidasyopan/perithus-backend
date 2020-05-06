@@ -21,7 +21,7 @@ function fecthOrdersByMonth(ini_date, end_date, username, callback) {
   INNER JOIN user_access ua ON ua.user_id = ore.user_id
   WHERE ore.user_id = (SELECT user_id FROM user_access WHERE username = '${username}')
   AND ore.order_date >= '${ini_date}' 
-    AND ore.order_date < fn_getlastofmonth('${end_date}')`;
+    AND ore.order_date <= fn_getlastofmonth('${end_date}')`;
 
   console.log(sql);
 

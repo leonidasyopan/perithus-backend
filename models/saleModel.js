@@ -4,7 +4,7 @@ const connectionString = process.env.DATABASE_URL;
 
 const pool = new Pool({ connectionString });
 
-function fecthOrderList(username, callback) {
+function fecthSaleList(username, callback) {
   const sql = `SELECT ua.user_id,
   ua.username,
   od.order_id,
@@ -32,7 +32,7 @@ function fecthOrderList(username, callback) {
   });
 }
 
-function createOrder(product_id, product_amount, username, callback) {
+function createSale(product_id, product_amount, username, callback) {
   const sqlOne = `INSERT INTO order_register (
     user_id, 
     order_date
@@ -101,45 +101,45 @@ function createOrder(product_id, product_amount, username, callback) {
 //   });
 // }
 
-function deleteOrder(id, username, callback) {
-  const sqlOne = `SELECT order_id 
-  FROM order_register 
-  WHERE order_id = ${id} 
-  AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
-  console.log(sqlOne);
+// function deleteSale(id, username, callback) {
+//   const sqlOne = `SELECT order_id
+//   FROM order_register
+//   WHERE order_id = ${id}
+//   AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
+//   console.log(sqlOne);
 
-  pool.query(sqlOne, (error, result) => {
-    if (result.rowCount == 0) {
-      console.log(result);
-      error = `Você não está autorizado a deletar esse pedido.`;
-      callback(error, null);
-    } else if (error) {
-      callback(error, null);
-    } else if (result.rows[0].order_id == id) {
-      const sqlTwo = `DELETE FROM order_details WHERE order_id = ${id};
-                      DELETE FROM order_register WHERE order_id = ${id}`;
+//   pool.query(sqlOne, (error, result) => {
+//     if (result.rowCount == 0) {
+//       console.log(result);
+//       error = `Você não está autorizado a deletar esse pedido.`;
+//       callback(error, null);
+//     } else if (error) {
+//       callback(error, null);
+//     } else if (result.rows[0].order_id == id) {
+//       const sqlTwo = `DELETE FROM order_details WHERE order_id = ${id};
+//                       DELETE FROM order_register WHERE order_id = ${id}`;
 
-      pool.query(sqlTwo, (err, data) => {
-        if (data[0].rowCount === 0 && data[1].rowCount === 0) {
-          err = 'Pedido não encontrado no banco de dados.';
-          callback(err, null);
-        } else if (err) {
-          callback(err, null);
-        } else {
-          callback(null, data.rows);
-        }
-      });
-    } else {
-      console.log(result);
-      error = `Algum erro aconteceu. Tente novamente.`;
-      callback(error, null);
-    }
-  });
-}
+//       pool.query(sqlTwo, (err, data) => {
+//         if (data[0].rowCount === 0 && data[1].rowCount === 0) {
+//           err = 'Pedido não encontrado no banco de dados.';
+//           callback(err, null);
+//         } else if (err) {
+//           callback(err, null);
+//         } else {
+//           callback(null, data.rows);
+//         }
+//       });
+//     } else {
+//       console.log(result);
+//       error = `Algum erro aconteceu. Tente novamente.`;
+//       callback(error, null);
+//     }
+//   });
+// }
 
 module.exports = {
-  fecthOrderList,
-  createOrder,
-  deleteOrder,
-  // updateOrder,
+  // fecthSaleList,
+  createSale,
+  // deleteSale,
+  // updateSale,
 };

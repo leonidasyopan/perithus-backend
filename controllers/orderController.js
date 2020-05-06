@@ -8,6 +8,13 @@ function handleListOrders(request, response) {
     if (error || data == null) {
       return response.status(400).json({ success: false, message: error });
     } else {
+      // Map method to calculate the total of the order
+      data.map((item) => {
+        const totalItems =
+          Number(item.product_price) * Number(item.product_amount);
+        item.order_total = totalItems;
+      });
+
       return response.status(200).json(data);
     }
   });

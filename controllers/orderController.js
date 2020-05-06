@@ -81,7 +81,9 @@ function handleAddOrder(request, response) {
 function handleDeleteOrder(request, response) {
   const { id } = request.params;
 
-  orderModel.deleteOrder(id, (error, data) => {
+  const username = request.session.username;
+
+  orderModel.deleteOrder(id, username, (error, data) => {
     if (error) {
       return response.status(400).json({
         success: false,
@@ -90,7 +92,7 @@ function handleDeleteOrder(request, response) {
     } else {
       return response.status(200).json({
         success: true,
-        message: 'Produto deletado com sucesso!',
+        message: 'Pedido deletado com sucesso!',
         product: id,
       });
     }

@@ -36,7 +36,7 @@ orderRoutes.post(
 //   orderController.handleUpdateOrder,
 // );
 
-// orderRoutes.delete('/excluir-pedido/:id', orderController.handleDeleteOrder);
+orderRoutes.delete('/excluir-pedido/:id', orderController.handleDeleteOrder);
 
 module.exports = {
   orderRoutes,

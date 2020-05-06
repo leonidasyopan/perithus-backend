@@ -100,19 +100,54 @@ function createOrder(product_id, product_amount, username, callback) {
 //   });
 // }
 
-function deleteOrder(id, callback) {
-  const sql = `DELETE FROM products WHERE product_id = ${id}`;
+function deleteOrder(id, username, callback) {
+  const sqlOne = `SELECT order_id 
+  FROM order_register 
+  WHERE order_id = ${id} 
+  AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
+  console.log(sqlOne);
 
-  pool.query(sql, (error, data) => {
-    if (data.rowCount === 0) {
-      error = 'Produto não encontrado no banco de dados.';
+  pool.query(sqlOne, (error, result) => {
+    if (result.rowCount == 0) {
+      console.log(result);
+      error = `Você não está autorizado a deletar esse pedido.`;
       callback(error, null);
     } else if (error) {
       callback(error, null);
+    } else if (result.rows[0].order_id == id) {
+      const sqlTwo = `DELETE FROM order_details WHERE order_id = ${id};
+                      DELETE FROM order_register WHERE order_id = ${id}`;
+
+      pool.query(sqlTwo, (err, data) => {
+        if (data[0].rowCount === 0 && data[1].rowCount === 0) {
+          err = 'Pedido não encontrado no banco de dados.';
+          callback(err, null);
+        } else if (err) {
+          callback(err, null);
+        } else {
+          callback(null, data.rows);
+        }
+      });
     } else {
-      callback(null, data.rows);
+      console.log(result);
+      error = `Algum erro aconteceu. Tente novamente.`;
+      callback(error, null);
     }
   });
+
+  // const sqlTwo = `Delete from order_details where order_id = ${id};
+  // Delete from order_register where order_id = ${id}`;
+
+  // pool.query(sql, (error, data) => {
+  //   if (data[0].rowCount === 0 && data[1].rowCount === 0) {
+  //     error = 'Pedido não encontrado no banco de dados.';
+  //     callback(error, null);
+  //   } else if (error) {
+  //     callback(error, null);
+  //   } else {
+  //     callback(null, data.rows);
+  //   }
+  // });
 }
 
 module.exports = {

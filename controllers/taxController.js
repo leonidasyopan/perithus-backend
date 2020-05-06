@@ -16,17 +16,27 @@ function handleOrdersTaxByPeriod(request, response) {
     if (error || data == null) {
       return response.status(400).json({ success: false, message: error });
     } else {
-      const result = [];
-      const taxTotal = data.map((item) => {
+      // This method iterates through each item to compute the owned tax
+      // then adds this information as a key value pair.
+      data.map((item) => {
         const compute =
           Number(item.product_price) * Number(item.product_amount) * 0.06;
         item.tax_owned = compute;
-        return compute;
       });
 
-      result.push(data);
-      result.push(taxTotal);
-      return response.status(200).json(result);
+      // This method iterates through each order and add all the tax_owned
+      const totalTax = data.reduce((total, item) => {
+        return total + item.tax_owned;
+      }, 0);
+
+      // Creates a new object to store the WHOLE information. Including DB
+      // data and the total owned tax - which was just added together.
+      const completeData = {
+        orderListDetailed: data,
+        totalTaxOwned: totalTax,
+      };
+
+      return response.status(200).json(completeData);
     }
   });
 }

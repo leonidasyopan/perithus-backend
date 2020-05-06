@@ -74,33 +74,47 @@ function createOrder(product_id, product_amount, username, callback) {
   });
 }
 
-// function updateOrder(
-//   id,
-//   product_name,
-//   product_description,
-//   product_price,
-//   callback,
-// ) {
-//   const sql = `UPDATE products
-//   SET
-//     product_name = $1,
-//     product_description = $2,
-//     product_price = $3
-//   WHERE
-//     product_id = $4;`;
-//   const params = [product_name, product_description, product_price, id];
+function updateOrder(id, product_id, product_amount, username, callback) {
+  const sqlOne = `SELECT order_id
+    FROM order_register
+    WHERE order_id = ${id}
+    AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
+  console.log(sqlOne);
 
-//   pool.query(sql, params, (error, data) => {
-//     if (data.rowCount === 0) {
-//       error = 'Produto não encontrado no banco de dados. Tente novamente!';
-//       callback(error, null);
-//     } else if (error) {
-//       callback(error, null);
-//     } else {
-//       callback(null, data.rows);
-//     }
-//   });
-// }
+  pool.query(sqlOne, (error, result) => {
+    if (result.rowCount == 0) {
+      console.log(result);
+      error = `Você não está autorizado a alterar esse pedido.`;
+      callback(error, null);
+    } else if (error) {
+      console.log(result);
+      callback(error, null);
+    } else if (result.rows[0].order_id == id) {
+      const sqlTwo = `UPDATE order_register
+        SET order_updated_date = current_timestamp
+        WHERE order_id = ${id};  
+        UPDATE order_details
+        SET     
+          product_id = ${product_id},
+          product_amount = ${product_amount}
+        WHERE
+          order_id = ${id}`;
+      console.log(sqlTwo);
+
+      pool.query(sqlTwo, (err, data) => {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, data.rows);
+        }
+      });
+    } else {
+      console.log(result);
+      error = `Algum erro aconteceu. Tente novamente.`;
+      callback(error, null);
+    }
+  });
+}
 
 function deleteOrder(id, username, callback) {
   const sqlOne = `SELECT order_id 
@@ -142,5 +156,5 @@ module.exports = {
   fecthOrderList,
   createOrder,
   deleteOrder,
-  // updateOrder,
+  updateOrder,
 };

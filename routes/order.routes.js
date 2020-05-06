@@ -21,20 +21,20 @@ orderRoutes.post(
   orderController.handleAddOrder,
 );
 
-// orderRoutes.put(
-//   '/alterar-pedido/:id',
-//   [
-//     check('product_name', 'Forneça apenas o nome do produto.').trim().escape(),
-//     check('product_description', 'Fornaça a descrição do produto.')
-//       .trim()
-//       .escape(),
-//     check('product_price', 'Forneça apenas o preço (numérico).')
-//       .trim()
-//       .escape()
-//       .toFloat(),
-//   ],
-//   orderController.handleUpdateOrder,
-// );
+orderRoutes.put(
+  '/alterar-pedido/:id',
+  [
+    check('product_id', 'A id do produto é um número natural')
+      .trim()
+      .escape()
+      .toInt(),
+    check('product_amount', 'Forneça uma quantidade válida.')
+      .trim()
+      .escape()
+      .toInt(),
+  ],
+  orderController.handleUpdateOrder,
+);
 
 orderRoutes.delete('/excluir-pedido/:id', orderController.handleDeleteOrder);
 

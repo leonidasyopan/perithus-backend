@@ -51,39 +51,39 @@ function handleAddOrder(request, response) {
   );
 }
 
-// function handleUpdateOrder(request, response) {
-//   const errors = validationResult(request);
-//   if (!errors.isEmpty()) {
-//     return response.status(422).json({ errors: errors.array() });
-//   }
+function handleUpdateOrder(request, response) {
+  const errors = validationResult(request);
+  if (!errors.isEmpty()) {
+    return response.status(422).json({ errors: errors.array() });
+  }
 
-//   const { id } = request.params;
+  const { id } = request.params;
 
-//   const product_name = request.body.product_name;
-//   const product_description = request.body.product_description;
-//   const product_price = request.body.product_price;
+  const product_id = request.body.product_id;
+  const product_amount = request.body.product_amount;
+  const username = request.session.username;
 
-//   orderModel.updateOrder(
-//     id,
-//     product_name,
-//     product_description,
-//     product_price,
-//     (error, data) => {
-//       if (error) {
-//         return response.status(400).json({
-//           success: false,
-//           error: error,
-//         });
-//       } else {
-//         return response.status(200).json({
-//           success: true,
-//           message: 'Produto alterado com sucesso!',
-//           product: `${product_name}`,
-//         });
-//       }
-//     },
-//   );
-// }
+  orderModel.updateOrder(
+    id,
+    product_id,
+    product_amount,
+    username,
+    (error, data) => {
+      if (error) {
+        return response.status(400).json({
+          success: false,
+          error: error,
+        });
+      } else {
+        return response.status(200).json({
+          success: true,
+          message: 'Pedido alterado com sucesso!',
+          product: `${product_id}`,
+        });
+      }
+    },
+  );
+}
 
 function handleDeleteOrder(request, response) {
   const { id } = request.params;
@@ -110,5 +110,5 @@ module.exports = {
   handleListOrders,
   handleAddOrder,
   handleDeleteOrder,
-  // handleUpdateOrder,
+  handleUpdateOrder,
 };

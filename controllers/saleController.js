@@ -53,39 +53,41 @@ function handleAddSale(request, response) {
   );
 }
 
-// function handleUpdateSale(request, response) {
-//   const errors = validationResult(request);
-//   if (!errors.isEmpty()) {
-//     return response.status(422).json({ errors: errors.array() });
-//   }
+function handleUpdateSale(request, response) {
+  const errors = validationResult(request);
+  if (!errors.isEmpty()) {
+    return response.status(422).json({ errors: errors.array() });
+  }
 
-//   const { id } = request.params;
+  const { id } = request.params;
 
-//   const product_name = request.body.product_name;
-//   const product_description = request.body.product_description;
-//   const product_price = request.body.product_price;
+  const product_id = request.body.product_id;
+  const product_amount = request.body.product_amount;
+  const sale_price_per_product = request.body.sale_price_per_product;
+  const username = request.session.username;
 
-//   saleModel.updateSale(
-//     id,
-//     product_name,
-//     product_description,
-//     product_price,
-//     (error, data) => {
-//       if (error) {
-//         return response.status(400).json({
-//           success: false,
-//           error: error,
-//         });
-//       } else {
-//         return response.status(200).json({
-//           success: true,
-//           message: 'Produto alterado com sucesso!',
-//           product: `${product_name}`,
-//         });
-//       }
-//     },
-//   );
-// }
+  saleModel.updateSale(
+    id,
+    product_id,
+    product_amount,
+    sale_price_per_product,
+    username,
+    (error, data) => {
+      if (error) {
+        return response.status(400).json({
+          success: false,
+          error: error,
+        });
+      } else {
+        return response.status(200).json({
+          success: true,
+          message: 'Registro de venda alterado com sucesso!',
+          product: `${product_id}`,
+        });
+      }
+    },
+  );
+}
 
 function handleDeleteSale(request, response) {
   const { id } = request.params;
@@ -112,5 +114,5 @@ module.exports = {
   handleListSales,
   handleAddSale,
   handleDeleteSale,
-  // handleUpdateSale,
+  handleUpdateSale,
 };

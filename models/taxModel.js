@@ -12,6 +12,7 @@ function fecthOrdersByMonth(ini_date, end_date, username, callback) {
   ore.order_payment,
   ore.payment_date,
   ore.order_date,
+  ore.order_updated_date,
   p.product_name,
   p.product_description,
   p.product_price,

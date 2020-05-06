@@ -11,6 +11,7 @@ function fecthOrderList(username, callback) {
   ore.order_payment,
   ore.payment_date,
   ore.order_date,
+  ore.order_updated_date,
   od.product_amount,
   p.product_id,
   p.product_name,

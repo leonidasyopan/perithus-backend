@@ -4,7 +4,7 @@ const connectionString = process.env.DATABASE_URL;
 
 const pool = new Pool({ connectionString });
 
-function fecthOrderList(callback) {
+function fecthOrderList(username, callback) {
   const sql = `SELECT ua.user_id,
   ua.username,
   od.order_id,
@@ -17,7 +17,10 @@ function fecthOrderList(callback) {
   p.product_price FROM order_details od
   INNER JOIN order_register ore ON ore.order_id = od.order_id
   INNER JOIN products p ON p.product_id = od.product_id
-  INNER JOIN user_access ua ON ua.user_id = ore.user_id`;
+  INNER JOIN user_access ua ON ua.user_id = ore.user_id
+  WHERE ua.username = '${username}'`;
+
+  console.log(sql);
 
   pool.query(sql, function (error, data) {
     if (error) {

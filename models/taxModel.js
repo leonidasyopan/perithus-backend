@@ -34,17 +34,47 @@ function fecthOrdersByMonth(ini_date, end_date, username, callback) {
   });
 }
 
-function changeOrderPaymentStatus(id, callback) {
-  const sql = `DELETE FROM products WHERE product_id = ${id}`;
+function changeOrderPaymentStatus(id, username, callback) {
+  const sqlOne = `SELECT order_id 
+  FROM order_register 
+  WHERE order_id = ${id} 
+  AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
+  console.log(sqlOne);
 
-  pool.query(sql, (error, data) => {
-    if (data.rowCount === 0) {
-      error = 'Produto não encontrado no banco de dados.';
+  pool.query(sqlOne, (error, result) => {
+    if (result.rowCount == 0) {
+      console.log(result);
+      error = `Você não está autorizado a alterar informações desse pedido.`;
       callback(error, null);
     } else if (error) {
       callback(error, null);
+    } else if (result.rows[0].order_id == id) {
+      const sqlTwo = `UPDATE order_register
+      SET     
+        order_payment = TRUE,
+        payment_date = current_timestamp
+      WHERE
+        order_id = ${id}
+      AND
+        user_id = (SELECT user_id FROM user_access WHERE username = '${username}')`;
+
+      console.log(`sqlTwo: ${sqlTwo}`);
+
+      pool.query(sqlTwo, (err, data) => {
+        console.log(`data: ${data}`);
+        if (data[0].rowCount === 0 && data[1].rowCount === 0) {
+          err = 'Pedido não encontrado no banco de dados.';
+          callback(err, null);
+        } else if (err) {
+          callback(err, null);
+        } else {
+          callback(null, data.rows);
+        }
+      });
     } else {
-      callback(null, data.rows);
+      console.log(result);
+      error = `Algum erro aconteceu. Tente novamente.`;
+      callback(error, null);
     }
   });
 }

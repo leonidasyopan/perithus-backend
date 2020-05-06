@@ -43,8 +43,9 @@ function handleOrdersTaxByPeriod(request, response) {
 
 function handleOrderPaymentStatus(request, response) {
   const { id } = request.params;
+  const username = request.session.username;
 
-  taxModel.changeOrderPaymentStatus(id, (error, data) => {
+  taxModel.changeOrderPaymentStatus(id, username, (error, data) => {
     if (error) {
       return response.status(400).json({
         success: false,

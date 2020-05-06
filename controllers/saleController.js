@@ -87,30 +87,30 @@ function handleAddSale(request, response) {
 //   );
 // }
 
-// function handleDeleteSale(request, response) {
-//   const { id } = request.params;
+function handleDeleteSale(request, response) {
+  const { id } = request.params;
 
-//   const username = request.session.username;
+  const username = request.session.username;
 
-//   saleModel.deleteSale(id, username, (error, data) => {
-//     if (error) {
-//       return response.status(400).json({
-//         success: false,
-//         error: error,
-//       });
-//     } else {
-//       return response.status(200).json({
-//         success: true,
-//         message: 'Pedido deletado com sucesso!',
-//         product: id,
-//       });
-//     }
-//   });
-// }
+  saleModel.deleteSale(id, username, (error, data) => {
+    if (error) {
+      return response.status(400).json({
+        success: false,
+        error: error,
+      });
+    } else {
+      return response.status(200).json({
+        success: true,
+        message: 'Registro de venda deletado com sucesso!',
+        product: id,
+      });
+    }
+  });
+}
 
 module.exports = {
   handleListSales,
   handleAddSale,
-  // handleDeleteSale,
+  handleDeleteSale,
   // handleUpdateSale,
 };

@@ -40,7 +40,7 @@ saleRoutes.post(
 //   saleController.handleUpdateSale,
 // );
 
-// saleRoutes.delete('/excluir-venda/:id', saleController.handleDeleteSale);
+saleRoutes.delete('/excluir-venda/:id', saleController.handleDeleteSale);
 
 module.exports = {
   saleRoutes,

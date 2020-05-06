@@ -60,7 +60,7 @@ function createSale(
       ) VALUES (
         (SELECT sale_id 
           FROM sale_register 
-          sale BY sale_date DESC 
+          ORDER BY sale_date DESC 
           LIMIT 1),
         ${product_id},
         ${product_amount},
@@ -108,45 +108,45 @@ function createSale(
 //   });
 // }
 
-// function deleteSale(id, username, callback) {
-//   const sqlOne = `SELECT sale_id
-//   FROM sale_register
-//   WHERE sale_id = ${id}
-//   AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
-//   console.log(sqlOne);
+function deleteSale(id, username, callback) {
+  const sqlOne = `SELECT sale_id
+  FROM sale_register
+  WHERE sale_id = ${id}
+  AND user_id = (SELECT user_id FROM user_access WHERE username = '${username}');`;
+  console.log(sqlOne);
 
-//   pool.query(sqlOne, (error, result) => {
-//     if (result.rowCount == 0) {
-//       console.log(result);
-//       error = `Você não está autorizado a deletar esse pedido.`;
-//       callback(error, null);
-//     } else if (error) {
-//       callback(error, null);
-//     } else if (result.rows[0].sale_id == id) {
-//       const sqlTwo = `DELETE FROM sale_details WHERE sale_id = ${id};
-//                       DELETE FROM sale_register WHERE sale_id = ${id}`;
+  pool.query(sqlOne, (error, result) => {
+    if (result.rowCount == 0) {
+      console.log(result);
+      error = `Você não está autorizado a deletar esse registro venda.`;
+      callback(error, null);
+    } else if (error) {
+      callback(error, null);
+    } else if (result.rows[0].sale_id == id) {
+      const sqlTwo = `DELETE FROM sale_details WHERE sale_id = ${id};
+                      DELETE FROM sale_register WHERE sale_id = ${id}`;
 
-//       pool.query(sqlTwo, (err, data) => {
-//         if (data[0].rowCount === 0 && data[1].rowCount === 0) {
-//           err = 'Pedido não encontrado no banco de dados.';
-//           callback(err, null);
-//         } else if (err) {
-//           callback(err, null);
-//         } else {
-//           callback(null, data.rows);
-//         }
-//       });
-//     } else {
-//       console.log(result);
-//       error = `Algum erro aconteceu. Tente novamente.`;
-//       callback(error, null);
-//     }
-//   });
-// }
+      pool.query(sqlTwo, (err, data) => {
+        if (data[0].rowCount === 0 && data[1].rowCount === 0) {
+          err = 'Registro de venda não encontrado no banco de dados.';
+          callback(err, null);
+        } else if (err) {
+          callback(err, null);
+        } else {
+          callback(null, data.rows);
+        }
+      });
+    } else {
+      console.log(result);
+      error = `Algum erro aconteceu. Tente novamente.`;
+      callback(error, null);
+    }
+  });
+}
 
 module.exports = {
   fecthSaleList,
   createSale,
-  // deleteSale,
+  deleteSale,
   // updateSale,
 };

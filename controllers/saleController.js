@@ -28,22 +28,29 @@ function handleAddSale(request, response) {
 
   const product_id = request.body.product_id;
   const product_amount = request.body.product_amount;
+  const sale_price_per_product = request.body.sale_price_per_product;
   const username = request.session.username;
 
-  saleModel.createSale(product_id, product_amount, username, (error, data) => {
-    if (error) {
-      return response.status(400).json({
-        success: false,
-        error: error,
-      });
-    } else {
-      return response.status(200).json({
-        success: true,
-        message: 'Pedido enviado com sucesso!',
-        product: `${product_id}`,
-      });
-    }
-  });
+  saleModel.createSale(
+    product_id,
+    product_amount,
+    sale_price_per_product,
+    username,
+    (error, data) => {
+      if (error) {
+        return response.status(400).json({
+          success: false,
+          error: error,
+        });
+      } else {
+        return response.status(200).json({
+          success: true,
+          message: 'Venda registrada com sucesso!',
+          product: `${product_id}`,
+        });
+      }
+    },
+  );
 }
 
 // function handleUpdateSale(request, response) {

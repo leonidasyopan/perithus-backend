@@ -4,42 +4,48 @@ const connectionString = process.env.DATABASE_URL;
 
 const pool = new Pool({ connectionString });
 
-function fecthSaleList(username, callback) {
-  const sql = `SELECT ua.user_id,
-  ua.username,
-  od.order_id,
-  ore.order_payment,
-  ore.payment_date,
-  ore.order_date,
-  od.product_amount,
-  p.product_id,
-  p.product_name,
-  p.product_description,
-  p.product_price FROM order_details od
-  INNER JOIN order_register ore ON ore.order_id = od.order_id
-  INNER JOIN products p ON p.product_id = od.product_id
-  INNER JOIN user_access ua ON ua.user_id = ore.user_id
-  WHERE ua.username = '${username}'`;
+// function fecthSaleList(username, callback) {
+//   const sql = `SELECT ua.user_id,
+//   ua.username,
+//   od.order_id,
+//   ore.order_payment,
+//   ore.payment_date,
+//   ore.order_date,
+//   od.product_amount,
+//   p.product_id,
+//   p.product_name,
+//   p.product_description,
+//   p.product_price FROM order_details od
+//   INNER JOIN order_register ore ON ore.order_id = od.order_id
+//   INNER JOIN products p ON p.product_id = od.product_id
+//   INNER JOIN user_access ua ON ua.user_id = ore.user_id
+//   WHERE ua.username = '${username}'`;
 
-  console.log(sql);
+//   console.log(sql);
 
-  pool.query(sql, function (error, data) {
-    if (error) {
-      callback(error, null);
-    } else {
-      callback(null, data.rows);
-    }
-  });
-}
+//   pool.query(sql, function (error, data) {
+//     if (error) {
+//       callback(error, null);
+//     } else {
+//       callback(null, data.rows);
+//     }
+//   });
+// }
 
-function createSale(product_id, product_amount, username, callback) {
-  const sqlOne = `INSERT INTO order_register (
+function createSale(
+  product_id,
+  product_amount,
+  sale_price_per_product,
+  username,
+  callback,
+) {
+  const sqlOne = `INSERT INTO sales_register (
     user_id, 
-    order_date
+    sale_date
   ) VALUES(
     (SELECT user_id FROM user_access WHERE username = '${username}'),     
     current_timestamp
-  ) RETURNING order_id`;
+  ) RETURNING sales_id`;
 
   console.log(`sqlOne: ${sqlOne}`);
 
@@ -47,17 +53,19 @@ function createSale(product_id, product_amount, username, callback) {
     if (error) {
       callback(error, null);
     } else {
-      const sqlTwo = `INSERT INTO order_details (
-        order_id,
+      const sqlTwo = `INSERT INTO sales_details (
+        sales_id,
         product_id,
-        product_amount
+        product_amount,
+        sale_price_per_product
       ) VALUES (
-        (SELECT order_id 
-          FROM order_register 
-          ORDER BY order_date DESC 
+        (SELECT sales_id 
+          FROM sales_register 
+          ORDER BY sale_date DESC 
           LIMIT 1),
         ${product_id},
-        ${product_amount}
+        ${product_amount},
+        ${sale_price_per_product}
       )`;
 
       console.log(`sqlTwo: ${sqlTwo}`);

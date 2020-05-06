@@ -17,6 +17,10 @@ saleRoutes.post(
       .trim()
       .escape()
       .toInt(),
+    check('sale_price_per_product', 'Forneça um preço de venda válido.')
+      .trim()
+      .escape()
+      .toInt(),
   ],
   saleController.handleAddSale,
 );

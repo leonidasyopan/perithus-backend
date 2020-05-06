@@ -16,7 +16,17 @@ function handleOrdersTaxByPeriod(request, response) {
     if (error || data == null) {
       return response.status(400).json({ success: false, message: error });
     } else {
-      return response.status(200).json(data);
+      const result = [];
+      const taxTotal = data.map((item) => {
+        const compute =
+          Number(item.product_price) * Number(item.product_amount) * 0.06;
+        item.tax_owned = compute;
+        return compute;
+      });
+
+      result.push(data);
+      result.push(taxTotal);
+      return response.status(200).json(result);
     }
   });
 }

@@ -70,6 +70,7 @@ function handleLogin(request, response) {
       return response.status(200).json({
         success: true,
         message: 'Login efetuado com sucesso.',
+        username: username,
       });
     }
   });

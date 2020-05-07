@@ -22,10 +22,9 @@ userRoutes.post(
 userRoutes.post(
   '/login',
   [
-    check('username', 'Formato de usuário inválido. Tente novamente!')
-      .isLength({ min: 5 })
-      .trim()
-      .escape(),
+    check('email', 'Formato de email inválido. Tente novamente!')
+      .isEmail()
+      .normalizeEmail(),
     check('password', 'Formato de senha inválido. Tente novamente!').isLength({
       min: 5,
     }),

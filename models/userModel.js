@@ -26,8 +26,8 @@ function createUser(username, password, email, callback) {
   });
 }
 
-function loginUser(username, password, callback) {
-  const sql = `SELECT * from user_access WHERE username = '${username}'`;
+function loginUser(email, password, callback) {
+  const sql = `SELECT * from user_access WHERE email = '${email}'`;
 
   pool.query(sql, (error, data) => {
     if (data.rows.length === 0) {

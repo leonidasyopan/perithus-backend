@@ -19,13 +19,12 @@ function handleRegister(request, response) {
         if (error) {
           return response.status(400).json({
             success: false,
-            error: error,
+            message: error,
           });
         } else {
           return response.status(200).json({
             success: true,
             message: 'Usuário criado com sucesso!',
-            username: `${username}`,
           });
         }
       });
@@ -43,32 +42,37 @@ function handleLogin(request, response) {
     return response.status(422).json({ errors: errors.array() });
   }
 
-  const username = request.body.username;
+  const email = request.body.email;
   const password = request.body.password;
-  if (request.session.username) {
-    return response.status(200).json({
-      success: false,
-      message: 'Você já está logado.',
-      username: `${username}`,
-    });
-  } else {
-    userModel.loginUser(username, password, (error, data) => {
-      if (error) {
+
+  userModel.loginUser(email, password, (error, data) => {
+    if (error) {
+      return response.status(400).json({
+        success: false,
+        message: error,
+      });
+    } else {
+      const username = data[0].username;
+      console.log(`data: ${data[0].username}`);
+
+      if (request.session.username == username) {
+        console.log(`1st: ${request.session.username}`);
+
         return response.status(400).json({
           success: false,
-          message: error,
-        });
-      } else {
-        request.session.username = username;
-        request.session.cart = [];
-        return response.status(200).json({
-          success: true,
-          message: 'Login efetuado com sucesso.',
-          username: `${username}`,
+          message: 'Você já está logado.',
         });
       }
-    });
-  }
+
+      request.session.username = username;
+      console.log(`2nd: ${request.session.username}`);
+      request.session.cart = [];
+      return response.status(200).json({
+        success: true,
+        message: 'Login efetuado com sucesso.',
+      });
+    }
+  });
 }
 
 module.exports = {

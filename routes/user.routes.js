@@ -41,9 +41,9 @@ userRoutes.get('/logout', (request, response) => {
       message: 'Logout bem-sucedido.',
     });
   } else {
-    return response.status(400).json({
-      success: false,
-      error: 'Houve um erro com seu logout.',
+    return response.status(200).json({
+      success: true,
+      error: 'Você já está desconectado.',
     });
   }
 });
